@@ -1,0 +1,343 @@
+Consider the default Emp table for all the questions below:
+Q1.Create a procedure PC1 that uses a cursor to display employee name and salary for all employees.
+
+DELIMITER //
+CREATE PROCEDURE PC1()
+BEGIN
+		-- declare local variables
+		DECLARE v_ename VARCHAR(50);
+		DECLARE v_sal INT;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT ename, sal
+		FROM emp;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_ename, v_sal;
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		SELECT v_ename, v_sal;
+	END LOOP;
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+
+	CALL PC1;
+
+
+Q2.Create a procedure PC2 that uses a cursor to calculate the total salary of all employees and display the final total.
+
+DELIMITER //
+CREATE PROCEDURE PC2()
+BEGIN
+		-- declare local variables
+		DECLARE v_curr_sal INT;
+		DECLARE v_sal_res INT DEFAULT 0;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT sal
+		FROM emp;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_curr_sal;
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		SET v_sal_res = v_sal_res + v_curr_sal;
+		
+		
+	END LOOP;
+	SELECT v_sal_res;
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+
+Q3.Create a procedure PC3 that prints only employees whose salary is greater than 3000 using a cursor.
+
+DELIMITER //
+CREATE PROCEDURE PC3()
+BEGIN
+		-- declare local variables
+		DECLARE v_empno INT;
+		DECLARE v_ename VARCHAR(50);
+		DECLARE v_sal INT;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT empno, ename, sal
+		FROM emp;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_empno, v_ename, v_sal;
+		
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		IF v_sal > 3000 THEN 
+			SELECT 	v_empno, v_ename, v_sal;
+		END IF;
+		
+	END LOOP;
+	
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+Q4.Create a procedure PC4 hat uses a cursor to count how many employees are working in department 10.
+
+DELIMITER //
+CREATE PROCEDURE PC4()
+BEGIN
+		-- declare local variables
+		DECLARE v_deptno INT;
+		DECLARE tot_count INT DEFAULT 0;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT deptno
+		FROM emp;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_deptno;
+		
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		IF v_deptno = 10 THEN 
+			SET tot_count = tot_count + 1;
+		END IF;
+		
+	END LOOP;
+		SELECT tot_count;
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+
+Q5.Create a procedure PC5 that uses a cursor to display employees in descending order of salary.
+
+DELIMITER //
+CREATE PROCEDURE PC5()
+BEGIN
+		-- declare local variables
+		DECLARE v_empno INT;
+		DECLARE v_ename VARCHAR(50);
+		DECLARE v_sal INT;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT empno, ename, sal
+		FROM emp
+		ORDER BY sal DESC;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_empno, v_ename, v_sal;
+		
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+			SELECT 	v_empno, v_ename, v_sal;
+		
+	END LOOP;
+	
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+Q6.Create a procedure PC6 that uses a cursor to print employee name and department number for employees who do not receive commission.
+
+
+DELIMITER //
+CREATE PROCEDURE PC6()
+BEGIN
+		-- declare local variables
+		DECLARE v_ename VARCHAR(50);
+		DECLARE v_deptno INT;
+		DECLARE v_comm INT;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT ename, deptno, comm
+		FROM emp;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_ename, v_deptno, v_comm;
+		
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		IF v_comm IS NULL THEN
+			SELECT v_ename, v_deptno;
+		END IF;
+		
+	END LOOP;
+	
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+
+Q7.Create a procedure PC7 that uses a cursor to display only the first 5 employees, based on the order in which they were entered in the table.
+
+DELIMITER //
+CREATE PROCEDURE PC7()
+BEGIN
+		-- declare local variables
+		DECLARE v_ename VARCHAR(50);
+		DECLARE v_hiredate DATE;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT ename, hiredate
+		FROM emp
+		ORDER BY hiredate
+		LIMIT 5;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_ename, v_hiredate;
+		
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		SELECT v_ename, v_hiredate;
+		
+		
+	END LOOP;
+	
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+
+Q8.Create a procedure PC8 that uses a cursor to print employee names along with experience in years from HIREDATE till today.
+
+DELIMITER //
+CREATE PROCEDURE PC8()
+BEGIN
+		-- declare local variables
+		DECLARE v_ename VARCHAR(50);
+		DECLARE v_experience INT;
+		DECLARE v_hiredate DATE;
+		DECLARE done INT DEFAULT 0;
+		
+		-- cursor declaration
+		DECLARE emp_cursor CURSOR FOR
+		SELECT ename, hiredate
+		FROM emp;
+		
+		-- handler 
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+		
+		-- Open cursor
+		OPEN emp_cursor;
+		
+	read_loop : LOOP	-- loop 
+
+		-- Fetch CURSOR		
+		FETCH emp_cursor INTO v_ename, v_hiredate;
+		
+		-- checking if there are no more rows	
+		IF done THEN
+            LEAVE read_loop;
+        END IF;
+		
+		SET v_experience = TIMESTAMPDIFF(YEAR, v_hiredate, CURDATE());
+		
+		SELECT v_ename AS Emp_Name, v_experience AS Experience;
+		
+	END LOOP;
+	
+	CLOSE emp_cursor;
+END //
+DELIMITER ;
+
+

@@ -1,0 +1,623 @@
+---------------------------------------------------------
+------------------------ SET 1 --------------------------
+---------------------------------------------------------
+
+1) Create a procedure P1 that inserts numbers from 1 to 10 into table t1 which has only one column named a of int type. Use while loop only.
+
+	CREATE TABLE t1(a INT);
+
+	DELIMITER //
+	CREATE PROCEDURE P1()
+	BEGIN
+		DECLARE i int DEFAULT 1;
+		WHILE i<=10 DO
+			INSERT INTO t1(a) VALUES (i);
+			SET i = i + 1;
+		END WHILE;
+	END //
+	DELIMITER;
+
+2) Create a procedure P2 that inserts only even numbers between 1 and 50 into table t2 which has only one column named b of int type. Use repeat loop only.
+
+	create table t2(b int);
+ 
+	DELIMITER //
+	CREATE PROCEDURE P2()
+	BEGIN
+		DECLARE i INT DEFAULT 2;
+		REPEAT
+			INSERT INTO t2(b) VALUES (i);
+			SET i = i + 2;
+		UNTIL i > 50 END REPEAT;
+	END //
+	DELIMITER ;
+
+3) Create a procedure P3 that calculates sum of numbers from 1 to 100 and inserts the final sum as a single row in table t3 which has only one column named c of int type. Use of while loop only.
+
+	CREATE TABLE t3(c int);
+	
+	DELIMITER //
+	CREATE PROCEDURE P3()
+	BEGIN
+		DECLARE i INT DEFAULT 1;
+		DECLARE num INT DEFAULT 0;
+		WHILE i <= 100 DO
+			SET num = num + i;
+			SET i = i + 1;
+		END WHILE;
+		INSERT INTO t3(c) VALUES (num);
+	END //
+	DELIMITER; 
+
+4) Create a procedure P4 that inserts multiplication table of 5 (5 × 1 to 5 × 10) into table t4 which has only one column named d of int type. Use basic loop only.
+
+
+	CREATE TABLE t4(d INT);
+	
+	DELIMITER //
+	CREATE PROCEDURE P4(NUM INT)
+	BEGIN
+		DECLARE i INT DEFAULT 1;
+		DECLARE no INT DEFAULT NUM;
+		my_loop: LOOP
+		  INSERT INTO t4(d) VALUES(NUM * i);
+		  SET i = i + 1;
+		  
+		  IF i > 10 THEN 
+				LEAVE my_loop;
+		  END IF;
+		END LOOP my_loop;
+	END //
+		  
+	DELIMITER ;
+	
+5) Create a procedure P5 that inserts numbers from 20 down to 1 into table t5 which has only one column named e of int type. Use repeat loop only.
+
+	CREATE TABLE t5(e INT);
+	
+	DELIMITER //
+	CREATE PROCEDURE P5()
+	BEGIN
+		DECLARE i INT DEFAULT 20;
+		REPEAT
+			INSERT INTO t5(e) VALUES(i);
+			set i = i - 1;
+		UNTIL i < 1 END REPEAT;
+	END //
+	DELIMITER ;
+
+6) Create a procedure P6 that accepts marks as an input parameter and determines the student’s result. If the marks are greater than or equal to 80, the procedure should display the message 'Distinction'; if the marks are greater than or equal to 60 but less than 80, it should display 'First Class'; if the marks are greater than or equal to 40 but less than 60, it should display 'Pass'; otherwise, it should display 'Fail'.
+
+
+	DELIMITER //
+	CREATE PROCEDURE P6(marks INT)
+	BEGIN
+		IF marks >= 80 THEN
+			SELECT 'Distinction' AS 'result';
+		ELSEIF marks < 80 AND marks >= 60 THEN
+			SELECT 'First Class' AS 'result';
+		ELSEIF marks < 60 AND marks >= 40 THEN
+			SELECT 'Pass' AS 'result';
+		ELSE 
+			SELECT 'Fail' AS 'result';
+		END IF;
+	END //
+	DELIMITER ;
+
+
+7) Create a procedure P7 that inserts squares of numbers from 1 to 15 into a table t6 which has only one column named g of int type. Use basic loop only.
+
+	CREATE TABLE t6(g INT);
+	
+	DELIMITER //
+	CREATE PROCEDURE P7()
+	BEGIN
+		DECLARE i INT DEFAULT 1;
+		my_loop: LOOP
+			INSERT INTO t6(g) VALUES(i*i);
+			SET i = i + 1;
+			
+			IF i > 15 THEN
+				LEAVE my_loop;
+			END IF;
+		END LOOP my_loop;
+	END //
+	
+	DELIMITER ;
+		
+
+
+8) Create a procedure P8 that displays numbers starting from 1. Stop loop when number becomes divisible by 7. Display numbers until that point only. Use basic loop
+only.
+
+	DELIMITER //
+	CREATE PROCEDURE P8()
+	BEGIN
+		DECLARE i INT DEFAULT 1;
+		my_loop: LOOP
+			IF i%7 = 0 THEN
+				LEAVE my_loop;
+			END IF;
+			SELECT i;
+			SET i = i + 1;
+		END LOOP my_loop;
+	END //
+	DELIMITER ;
+	
+	
+	
+
+
+---------------------------------------------------------
+------------------------ SET 2 --------------------------
+---------------------------------------------------------
+
+1) Create a stored procedure that accepts an employee number as input and displays all details of that employee.
+
+	DELIMITER //
+	CREATE PROCEDURE P9(p_empno INT)
+	BEGIN
+		SELECT * FROM emp
+		WHERE empno = p_empno;
+	END //
+	DELIMITER ;
+
+2) Create a procedure that accepts a department number and displays:
+a. Total employees in that department
+b. Average salary
+c. Highest salary
+d. Lowest salary
+
+
+	DELIMITER //
+	CREATE PROCEDURE P9(IN p_deptno INT)
+	BEGIN
+		SELECT 
+			COUNT(*) AS 'Total_Emp',
+			AVG(sal) AS 'Average_Sal',
+			MAX(sal) AS 'Highest_Sal',
+			MIN(sal) AS 'Lowest_Sal'
+		FROM 
+			emp
+		WHERE
+			deptno = p_deptno;
+	END //
+	DELIMITER ;
+
+
+3) Create a copy of emp table as emp_sp.
+Create a stored procedure that:
+a. Accepts employee number and increment percentage
+b. Updates the salary accordingly in the emp_sp table
+c. Displays old salary and new salary
+
+	CREATE TABLE emp_sp AS SELECT * FROM emp;
+
+	DELIMITER //
+
+	CREATE PROCEDURE P10(
+		IN p_empno INT, 
+		IN p_increment_pct DECIMAL(5,2)
+	)
+	BEGIN
+		DECLARE v_old_sal DECIMAL(10,2);
+		DECLARE v_new_sal DECIMAL(10,2);
+
+		SELECT SAL INTO v_old_sal 
+		FROM emp_sp 
+		WHERE EMPNO = p_empno;
+
+		IF v_old_sal IS NOT NULL THEN
+			UPDATE emp_sp 
+			SET SAL = SAL + (SAL * (p_increment_pct / 100))
+			WHERE EMPNO = p_empno;
+
+			SELECT SAL INTO v_new_sal 
+			FROM emp_sp 
+			WHERE EMPNO = p_empno;
+
+			SELECT 
+				p_empno AS Employee_ID,
+				v_old_sal AS Old_Salary, 
+				v_new_sal AS New_Salary;
+		ELSE
+			SELECT 'Employee not found' AS Error_Message;
+		END IF;
+	END //
+
+	DELIMITER ;
+
+4) Create a procedure to insert a new employee into emp_sp table. The procedure should:
+a. Accept all required employee details as parameters
+b. Validate that EMPNO does not already exist
+c. If exists → return a message
+d. Else → insert record
+
+	DELIMITER //
+
+	CREATE PROCEDURE P11(
+		IN p_empno INT,
+		IN p_ename VARCHAR(10),
+		IN p_job VARCHAR(9),
+		IN p_mgr INT,
+		IN p_hiredate DATE,
+		IN p_sal DECIMAL(7,2),
+		IN p_comm DECIMAL(7,2),
+		IN p_deptno INT
+	)
+	BEGIN
+		IF EXISTS (SELECT 1 FROM emp_sp WHERE EMPNO = p_empno) THEN
+			SELECT CONCAT('Error: Employee Number ', p_empno, ' already exists.') AS Status;
+		ELSE
+			INSERT INTO emp_sp (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
+			VALUES (p_empno, p_ename, p_job, p_mgr, p_hiredate, p_sal, p_comm, p_deptno);
+		  
+			SELECT CONCAT('Success: Employee ', p_ename, ' has been added.') AS Status;
+		END IF;
+	END //
+
+	DELIMITER ;
+
+5) Create a procedure that accepts department number and displays employees who earn more than the average salary of that department.
+
+	DELIMITER //
+
+	CREATE PROCEDURE P12(IN p_deptno INT)
+	BEGIN
+		SELECT 
+			EMPNO, 
+			ENAME, 
+			SAL, 
+			DEPTNO
+		FROM 
+			emp
+		WHERE 
+			DEPTNO = p_deptno
+			AND SAL > (
+				SELECT AVG(SAL) 
+				FROM emp 
+				WHERE DEPTNO = p_deptno
+			);
+	END //
+
+	DELIMITER ;
+
+6) Create a procedure that:
+a. Accepts department number
+b. Calculates total salary expense from emp table
+c. If total expense > 10000 → display “High Expense Department”
+d. Else → display “Normal Expense Department”
+
+	DELIMITER //
+
+	CREATE PROCEDURE P13(IN p_deptno INT)
+	BEGIN
+		DECLARE v_total_expense DECIMAL(10,2);
+
+		SELECT SUM(SAL) INTO v_total_expense
+		FROM emp
+		WHERE DEPTNO = p_deptno;
+
+		IF v_total_expense IS NULL THEN
+			SELECT 'Department is empty or does not exist' AS Result;
+		ELSEIF v_total_expense > 10000 THEN
+			SELECT v_total_expense AS Total_Salary, 'High Expense Department' AS Status;
+		ELSE
+			SELECT v_total_expense AS Total_Salary, 'Normal Expense Department' AS Status;
+		END IF;
+	END //
+
+	DELIMITER ;
+
+7) Create a procedure that:
+a. Accepts employee number
+b. Based on salary, returns grade:
+c. SAL >= 3000 → Grade A
+d. SAL between 2000 and 2999 → Grade B
+e. SAL < 2000 → Grade C
+
+	DELIMITER //
+	CREATE PROCEDURE P14(IN p_empno INT)
+	BEGIN
+		SELECT sal, case
+		WHEN sal >= 3000 THEN 'A'
+		WHEN sal BETWEEN 2000 AND 2999 THEN 'B'
+		WHEN sal < 2000 THEN 'C'
+		END AS 'GRADE'
+		FROM emp
+		WHERE empno = p_empno;
+	END //
+	DELIMITER ;
+		
+	
+
+8) Create a procedure that accepts a year and:
+a. Displays total employees hired in that year
+b. Displays average salary of those employees
+
+	DELIMITER //
+
+	CREATE PROCEDURE P15(IN p_year INT)
+	BEGIN
+		SELECT 
+			COUNT(*) AS Total_Employees_Hired,
+			ROUND(AVG(SAL), 2) AS Average_Salary
+		FROM 
+			emp
+		WHERE 
+			YEAR(HIREDATE) = p_year;
+	END //
+
+	DELIMITER ;
+
+9) Create a copy of Emp table as “Emp_Copy”. Ensure all records of emp get copied in the new table. Create a procedure that will add a new record in Emp_Copy table as per following
+specifications:
+a. Accepts all employee details as IN parameters
+b. Returns via OUT parameter:
+c. Status Message should be "Inserted Successfully" if the new empno is unique. And the record should get added in the Emp_Copy table.
+d. Else if the empno is duplicate then the message should be "Employee Already Exists" and records should not get added in the Emp_Copy table.
+
+	CREATE TABLE Emp_Copy AS SELECT * FROM emp;
+
+	DELIMITER //
+
+	CREATE PROCEDURE P16(
+		IN p_empno INT,
+		IN p_ename VARCHAR(10),
+		IN p_job VARCHAR(9),
+		IN p_mgr INT,
+		IN p_hiredate DATE,
+		IN p_sal DECIMAL(7,2),
+		IN p_comm DECIMAL(7,2),
+		IN p_deptno INT,
+		OUT p_status VARCHAR(50) 
+	)
+	BEGIN
+		IF EXISTS (SELECT 1 FROM Emp_Copy WHERE EMPNO = p_empno) THEN
+			SET p_status = 'Employee Already Exists';
+		ELSE
+			INSERT INTO Emp_Copy (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
+			VALUES (p_empno, p_ename, p_job, p_mgr, p_hiredate, p_sal, p_comm, p_deptno);
+			
+			SET p_status = 'Inserted Successfully';
+		END IF;
+	END //
+
+	DELIMITER ;
+
+10) There are two tables namely Customers_2026 and Transactions_2026. 
+
+Customers_2026 table structure:
+No. ColumnName Data Type Constraints
+1 CustID Numeric Primary Key
+2 CustName String Cannot be blank
+3 Cust_Bill_Number Numeric Cannot be less than 500
+4 CustPassport_No String Can be blank but cannot repeat
+
+Transactions_2026 table structure:
+No. ColumnName Data Type Constraints
+1 CustID Numeric Must be taken from Customer_2026 table & it is mandatory.
+2 CusTrID Numeric Primary Key and Auto number
+3 Amount Numeric Cannot be negative and cannot exceed 100000
+
+Create the above two tables by applying all the constraints.
+There will be a Error_Log_table.
+It’s structure will be as follows:
+
+No. ColumnName Data Type
+1 RecID Numeric (Auto number)
+2 Error_date Date
+3 Error_Number Numeric
+4 Error_Message String
+
+Create a Procedure named “Add_Record” which will take customer id, name, bill no, passport number and amount as the parameters.
+The procedure should add record in both the tables. In case of any error the error details should go in the table named Error_Log_table.
+
+	-- 1. Customers Table
+	CREATE TABLE Customers_2026 (
+		CustID INT PRIMARY KEY,
+		CustName VARCHAR(100) NOT NULL,
+		Cust_Bill_Number INT,
+		CustPassport_No VARCHAR(50) UNIQUE,
+		-- Constraints
+		CONSTRAINT chk_CustName CHECK (TRIM(CustName) <> ''), 
+		CONSTRAINT chk_BillNo CHECK (Cust_Bill_Number >= 500)
+	);
+
+	-- 2. Transactions Table
+	CREATE TABLE Transactions_2026 (
+		CusTrID INT AUTO_INCREMENT PRIMARY KEY,
+		CustID INT NOT NULL,
+		Amount DECIMAL(10,2),
+		-- Constraints
+		CONSTRAINT fk_cust_trans FOREIGN KEY (CustID) REFERENCES Customers_2026(CustID),
+		CONSTRAINT chk_Amount CHECK (Amount >= 0 AND Amount <= 100000)
+	);
+
+	-- 3. Error Log Table
+	CREATE TABLE Error_Log_table (
+		RecID INT AUTO_INCREMENT PRIMARY KEY,
+		Error_date DATE,
+		Error_Number INT,
+		Error_Message VARCHAR(500)
+	);
+
+	DELIMITER //
+
+	CREATE PROCEDURE P17(
+		IN p_custid INT,
+		IN p_custname VARCHAR(100),
+		IN p_bill_no INT,
+		IN p_passport_no VARCHAR(50),
+		IN p_amount DECIMAL(10,2)
+	)
+	BEGIN
+		DECLARE v_err_no INT;
+		DECLARE v_err_msg VARCHAR(500);
+
+		DECLARE EXIT HANDLER FOR SQLEXCEPTION
+		BEGIN
+			GET DIAGNOSTICS CONDITION 1
+				v_err_no = MYSQL_ERRNO, 
+				v_err_msg = MESSAGE_TEXT;
+			
+			ROLLBACK;
+			
+			INSERT INTO Error_Log_table (Error_date, Error_Number, Error_Message)
+			VALUES (CURDATE(), v_err_no, v_err_msg);
+		END;
+
+		START TRANSACTION;
+
+		IF p_passport_no = '' THEN
+			SET p_passport_no = NULL;
+		END IF;
+
+		INSERT INTO Customers_2026 (CustID, CustName, Cust_Bill_Number, CustPassport_No)
+		VALUES (p_custid, p_custname, p_bill_no, p_passport_no);
+
+		INSERT INTO Transactions_2026 (CustID, Amount)
+		VALUES (p_custid, p_amount);
+
+		COMMIT;
+
+	END //
+
+	DELIMITER ;
+
+
+---------------------------------------------------------
+------------------------ SET 3 --------------------------
+---------------------------------------------------------
+
+Note: Cross check whether each following function is working correctly on MyEmp table, by calling the function in column listo = of select statement.
+
+1. Create a user defined function fn_annual_salary(emp_id INT) that returns the annual salary of an employee by calculating (SAL × 12) + (COMM × 12), treating NULL commission as 0.
+
+	DELIMITER //
+
+	CREATE FUNCTION fn_annual_salary(p_emp_id INT) 
+	RETURNS DECIMAL(10,2)
+	READS SQL DATA
+	BEGIN
+		DECLARE v_annual_sal DECIMAL(10,2);
+		
+		SELECT (SAL * 12) + (COALESCE(COMM, 0) * 12) INTO v_annual_sal 
+		FROM My_Emp 
+		WHERE EMPNO = p_emp_id;
+		
+		RETURN v_annual_sal;
+	END //
+
+	DELIMITER ;
+
+2. Create a function fn_experience_category(emp_id INT) that calculates total years of experience from HIREDATE till the current date and returns 'Junior' if experience is less than 2 years, 'Mid-Level' if between 2 and 5 years, and 'Senior' if more than 5
+years.
+
+	DELIMITER //
+
+	CREATE FUNCTION fn_experience_category(p_emp_id INT) 
+	RETURNS VARCHAR(20)
+	READS SQL DATA
+	BEGIN
+		DECLARE v_years INT;
+		DECLARE v_category VARCHAR(20);
+		
+		SELECT TIMESTAMPDIFF(YEAR, HIREDATE, CURDATE()) INTO v_years 
+		FROM My_Emp 
+		WHERE EMPNO = p_emp_id;
+		
+		IF v_years < 2 THEN 
+			SET v_category = 'Junior';
+		ELSEIF v_years <= 5 THEN 
+			SET v_category = 'Mid-Level';
+		ELSE 
+			SET v_category = 'Senior';
+		END IF;
+		
+		RETURN v_category;
+	END //
+
+	DELIMITER ;
+
+3. Develop a function fn_salary_grade(emp_id INT) that returns 'Grade C' if SAL is less than 1500, 'Grade B' if salary is between 1500 and 3000, and 'Grade A' if salary is above 3000.
+
+	DELIMITER //
+
+	CREATE FUNCTION fn_salary_grade(p_emp_id INT) 
+	RETURNS VARCHAR(10)
+	READS SQL DATA
+	BEGIN
+		DECLARE v_sal DECIMAL(10,2);
+		DECLARE v_grade VARCHAR(10);
+		
+		SELECT SAL INTO v_sal FROM My_Emp WHERE EMPNO = p_emp_id;
+		
+		IF v_sal < 1500 THEN 
+			SET v_grade = 'Grade C';
+		ELSEIF v_sal BETWEEN 1500 AND 3000 THEN 
+			SET v_grade = 'Grade B';
+		ELSE 
+			SET v_grade = 'Grade A';
+		END IF;
+		
+		RETURN v_grade;
+	END //
+
+	DELIMITER ;
+
+4. Create a function fn_team_size(manager_id INT) that returns the total number of employees reporting to a given manager based on the MGR column.
+
+	DELIMITER //
+
+	CREATE FUNCTION fn_team_size(p_manager_id INT) 
+	RETURNS INT
+	READS SQL DATA
+	BEGIN
+		DECLARE v_count INT;
+		
+		SELECT COUNT(*) INTO v_count 
+		FROM My_Emp 
+		WHERE MGR = p_manager_id;
+		
+		RETURN v_count;
+	END //
+
+	DELIMITER ;
+
+5. Create a function fn_salary_vs_dept_avg(emp_id INT) that compares an employee’s salary with the average salary of their department and returns 'Above Avg', 'Below Avg', or 'Equal Avg' accordingly.
+
+	DELIMITER //
+
+	CREATE FUNCTION fn_salary_vs_dept_avg(p_emp_id INT) 
+	RETURNS VARCHAR(20)
+	READS SQL DATA
+	BEGIN
+		DECLARE v_sal DECIMAL(10,2);
+		DECLARE v_deptno INT;
+		DECLARE v_avg_sal DECIMAL(10,2);
+		DECLARE v_result VARCHAR(20);
+		
+		-- 1. Get the target employee's salary and department
+		SELECT SAL, DEPTNO INTO v_sal, v_deptno 
+		FROM My_Emp 
+		WHERE EMPNO = p_emp_id;
+		
+		-- 2. Calculate the average salary for that specific department
+		SELECT AVG(SAL) INTO v_avg_sal 
+		FROM My_Emp 
+		WHERE DEPTNO = v_deptno;
+		
+		-- 3. Compare them
+		IF v_sal > v_avg_sal THEN 
+			SET v_result = 'Above Avg';
+		ELSEIF v_sal < v_avg_sal THEN 
+			SET v_result = 'Below Avg';
+		ELSE 
+			SET v_result = 'Equal Avg';
+		END IF;
+		
+		RETURN v_result;
+	END //
+
+	DELIMITER ;

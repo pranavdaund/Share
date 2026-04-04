@@ -1,0 +1,124 @@
+Questions:
+Q1.Display the StudentID, FirstName, LastName and City of all students.
+
+SELECT studentid, firstname, lastname, city 
+FROM students;
+
+Q2.Show the full name of each student by combining FirstName and LastName in a single column called FullName.
+
+SELECT CONCAT(firstname, " ", lastname) AS FullName
+FROM students;
+
+Q3.Display the FirstName, CourseName and CourseFee of students whose CourseFee is greater than 5000.
+
+SELECT firstname, coursename, coursefee
+FROM students
+WHERE coursefee > 5000;
+
+Q4.List the FirstName, City and CourseName of students who live in London.
+
+SELECT firstname, city, coursename
+FROM students
+WHERE city = 'London';
+
+Q5.Display the FirstName, LastName and JoinDate of students who joined after 1st March 2024.
+
+SELECT firstname, lastname, joindate
+FROM students
+WHERE joindate > '2024-03-01';
+
+Q6.Show the FirstName, CourseName and DiscountPercent of students who received a discount greater than 10%.
+
+SELECT firstname, coursename, discountpercent
+FROM students
+WHERE discountpercent > 10;
+
+Q7.Display StudentID, FirstName and CourseFee after discount. Calculate the final fee using the discount percentage.
+
+SELECT 
+    StudentID, 
+    FirstName, 
+    CourseFee,
+    DiscountPercent,
+    (CourseFee - (CourseFee * DiscountPercent / 100)) AS FinalFee
+FROM Students;
+
+Q8.Show FirstName, LastName and CourseFee of students whose CourseFee is between 4000 and 5000.
+
+SELECT firstname, lastname, coursefee
+FROM students
+WHERE coursefee BETWEEN 4000 AND 5000;
+
+Q9.Display the FirstName and City of students who are from London OR Manchester.
+
+SELECT firstname, city
+FROM students 
+WHERE city = 'London' OR city = 'Manchester';
+
+Q10.Show FirstName, Gender and CourseName of all Female students enrolled in Python course.
+
+SELECT firstname, gender, coursename
+FROM students
+WHERE gender = 'Female' AND coursename = 'Python';
+
+Q11.Display the StudentID, Full Name and Course Name for all students using a single column for the full name.
+
+SELECT studentid, CONCAT(firstname, " ", lastname) AS FullName, coursename
+FROM students;
+
+Q12.List the FirstName, CourseFee and DiscountPercent of students where DiscountPercent is 0.
+
+SELECT firstname, coursefee, discountpercent
+FROM students
+WHERE discountpercent = 0;
+
+Q13.Display FirstName, City and CourseName of students who are enrolled in SQL course and live in London.
+
+SELECT firstname, city, coursename
+FROM students
+WHERE coursename = 'SQL' AND city = 'London';
+
+Q14.Show FirstName, CourseName and JoinDate of students who joined in the month of February 2024.
+
+SELECT firstname, coursename, joindate
+FROM students
+WHERE joindate LIKE '2024-02___';
+
+Q15.Display FirstName, CourseFee and DiscountPercent where the CourseFee is greater than 5000 AND DiscountPercent is greater than 5.
+
+SELECT firstname, coursefee, discountpercent
+FROM students
+WHERE coursefee > 5000 AND discountpercent > 5;
+
+Q16.Create a column called StudentInfo that shows
+FirstName enrolled in CourseName.
+Example format:
+James enrolled in SQL
+
+SELECT CONCAT(firstname, " enrolled in ", coursename) AS StudentInfo
+FROM students;
+
+Q17.Display StudentID, FirstName and CourseFee where CourseName is SQL OR Power BI.
+
+SELECT studentid, firstname, coursefee
+FROM students
+WHERE coursename = 'SQL' OR coursename = 'Power BI';
+
+Q18.Show FirstName, City and CourseName for students who live in Liverpool AND are enrolled in Python.
+
+SELECT firstname, city, coursename
+FROM students
+WHERE city = 'Liverpool' AND coursename = 'Python';
+
+Q19.Display FirstName, CourseFee and DiscountPercent where DiscountPercent is greater than 10 OR CourseFee is greater than 6500.
+
+SELECT firstname, coursefee, discountpercent
+FROM students
+WHERE discountpercent > 10 OR coursefee > 6500;
+
+Q20.Display the following sentence using CONCAT:
+Example format:
+James Anderson joined SQL course on 2024-01-10
+
+SELECT CONCAT(firstname, " ", lastname, " joined ", coursename, " course on ", joindate) AS StudentInfo
+FROM students;

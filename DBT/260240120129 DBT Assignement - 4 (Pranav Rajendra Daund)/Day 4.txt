@@ -1,0 +1,103 @@
+1) Display the oldest employee in the deptno 30.
+
+	select ename, min(hiredate) from emp
+	group by ename
+	limit 1;
+	
+2) Display the records of employees who earn salary less than the average salary of
+job SALESMAN. The records of SALESMAN should be excluded from the
+report.
+
+	select * from emp
+	where job not in('salesman') and sal < (
+					select avg(sal) from emp 
+					where job = 'salesman');
+
+
+3) Display the top earner’s records from the job CLERK.
+
+	select * from emp
+	where sal = (select max(sal) from emp);
+
+
+4) Display the records of lowest earners who joined in the year 81.
+
+	select * from emp
+	where   sal = (
+				  select min(sal) from emp
+				  where hiredate between '1981-01-01' and '1981-12-31'
+				  );
+
+
+5) Display the records of employees who are earning above the average salary in
+   their own deptno.
+
+
+6) Display the name, hire date, and salary for all employees who have both the same
+   salary and commission as Scott.
+
+	SELECT ename, hiredate, sal, comm
+	FROM emp
+	WHERE ename NOT IN ('Scott') 
+	  AND sal = (SELECT sal FROM emp WHERE ename = 'Scott')
+	  AND (
+			(comm = (SELECT comm FROM emp WHERE ename = 'Scott'))
+			OR (comm IS NULL AND (SELECT comm FROM emp WHERE ename = 'Scott') IS NULL)
+		  );
+	
+
+Note: Do not display SCOTT in the result set.
+
+7) Display the department names of employees who have their salary greater than
+Martin’s salary.
+
+	select distinct dname from emp 
+	join dept on dept.deptno = emp.deptno
+	where sal > ( select sal from emp
+				  where ename = 'Martin');
+				  
+8) Display the department name that has the highest salary record.
+
+	select distinct dname from emp 
+	join dept on dept.deptno = emp.deptno
+	where sal = ( select max(sal) from emp );
+
+
+
+1) Display all columns along with new column Discounted_Amount as 5% on the
+   amount for those transactions having quantity sold is above 3 for both the
+   countries.
+
+	select *, (amount - (amount*0.05)) as "Discounted Amount" from india
+	where qty > 3
+	union
+	select *, (amount - (amount*0.05)) as "Discounted Amount" from australia
+	where qty > 3;
+	
+2) Display product name wise number of products sold in each country along with a
+	sub total of each country as shown next:
+		
+	SELECT pname, count(qty) AS "Number of Items Sold", 'India' AS country
+	FROM india
+	GROUP BY pname
+	UNION 
+	SELECT 'India Count' AS pname, count(qty) AS "Number of Items Sold", 'India' AS country
+	FROM india
+
+	UNION 
+
+	SELECT pname, count(qty) AS "Number of Items Sold", 'Australia' AS country
+	FROM australia
+	GROUP BY pname
+	UNION 
+	SELECT 'Australia Count' AS pname, count(qty) AS "Number of Items Sold", 'Australia' AS country
+	FROM australia;
+	
+3) Display the following output:
+
+	select "India" as "Country", pname, sum(amount) from india
+	group by pname
+	union
+	select "Australia" as "Country", pname, sum(amount) from australia
+	group by  pname;
+	

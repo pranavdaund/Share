@@ -1,0 +1,99 @@
+ 1). Display the records of job clerk and manager for deptno 20.
+
+mysql> select * from emp
+    -> where job in('clerk','manager')
+    -> and deptno=20;
+	
+	
+2). Display the records for the employees, which have the last character as R or H in their name.
+
+mysql> select * from emp
+    -> where ename Like '%R' or ename Like '%H';
+	
+3). Display the records of the employees earning sal less than 1000 and there is no comm provided.
+
+mysql> select *  from emp
+    -> where sal > 1000 and comm is NULL or comm = 0;
+	
+4)Produce the following output:
+
+mysql> select  concat(ename,'is from the dept no', deptno,  ',earn salary is ', sal)as Detail from emp;
+
+5)Display the ename, sal, comm,  sal+comm. For the null value of commission 10% of sal should be used.
+
+mysql> select ename , sal, comm, sal  + coalesce(comm,sal*0.1) "total" from emp;
+
+6)Display the names, sal, job, deptno and raise in the salary.
+The raise is to be given under following scenarios –
+Employees from deptno 20 from job Clerk should get 30% raise in their salary.
+Employees from deptno 20 from job Analyst should get 50% raise in their salary.
+Employees from deptno 30 from job Manager should get 60% raise in their salary.
+Employees from deptno 30 from job Salesman should get 70% raise in their salary.
+Employees from deptno 10 from job Clerk should get 10% raise in their salary.
+The remaining employees should get a raise of 500.
+
+mysql> select ename,sal,job,deptno,case
+    ->     when (deptno=20)and(job='clerk')then(sal+sal*0.3)
+    ->     when (deptno=20)and(job='analyst')then(sal+sal*0.5)
+    ->     when(deptno=30)and(job='manager')then(sal+sal*0.6)
+    ->     when(deptno=30)and(job='salesman')then(sal+sal*0.7)
+    ->     when(deptno=10)and(job='clerk')then(sal+sal*0.1)
+    -> else sal+500
+    -> end as 'raise'
+    -> from emp;
+
+7)Display the records of employees from the job Clerk earning salary above 1000 as well as all Managers earning salary above 2900.
+
+mysql> select *
+    -> from emp
+    -> where (job='clerk' and sal>1000)or
+    -> (job='manager'and sal>2900);
+	
+	
+8)Display the records sorted as per the job. Make sure that within each job the records are sorted as per the highest to lowest commissions.
+
+mysql> select *
+    -> from emp
+    -> order by job,comm desc;
+	
+9)Display name, salary, 30% of salary as tax and salary – tax as take home salary for records of employee table working in deptno 20.
+
+ select ename,sal, case
+ when(deptno=20)then (sal-sal*0.3)end as'final' from emp;
+
+10)Display records from emp table of all Salesman from deptno 20 only.
+
+mysql>  select * from emp
+    ->  where deptno = 20 and job ='salesman';
+	
+11)Display records from emp table of all those employees who are not reporting to anyone.
+
+mysql> select * from emp
+    -> where MGR is null;
+	
+	
+12)Display records from emp table of those employees who are earning salary less than or equal to 2000. Records should be sorted as per deptno, and within deptno as per their salaries highest to lowest.
+
+
+mysql> select * from emp
+    -> where sal <= 2000,
+    -> order by deptno asc, sal desc;
+
+13)Display Name, Salary, Commission and Total as Salary + 30% of Commission for all those employees whose difference between Salary and Commission is less than or equal to 1200.
+
+mysql> select ename, sal, comm,case
+    -> when (sal-coalesce(comm,0))<=1200 then
+    -> (sal+coalesce(comm,comm*0.3)) end as"tatal" from emp;
+	
+
+14)Produce the exact same output as shown below:
+
+mysql> select concat(ename,"'s salary is",sal) from emp;
+
+15)Question 🡪 Display India records of year 2018 of Amount > 15000, China records of year 2018 of Amount < 20000 and Singapore records of year 2018 of Amount > 40000.
+
+mysql> select *
+    -> from asia
+    -> where (COUNTRY='India' and Dot between '2018-01-01' and '2018-12-31' and amount > 15000)or
+    -> (COUNTRY='China' and Dot between '2018-01-01' and '2018-12-31' and amount < 20000)or
+    -> (COUNTRY='Singapore' and Dot between '2018-01-01' and '2018-12-31' and amount > 40000);

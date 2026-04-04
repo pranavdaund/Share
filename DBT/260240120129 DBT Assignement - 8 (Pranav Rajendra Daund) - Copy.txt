@@ -1,0 +1,155 @@
+Q1) Create a DB with name exam_db with the collection name as student in mongodb.
+
+a) Display student names having Marks less than 75.
+
+		db.Student.find({ Marks: { $lt: 75 }});
+
+b) Update marks of Mahesh. Change his marks to 45.
+
+		db.Student.updateOne(
+		{ Name: "Mahesh" },
+		{ $set: { Marks: 45 } }
+		);
+
+
+Q2) Create a DB with name product_db with the collection name as products in
+mongodb insert the following records.
+
+a) Display records from Electrical type having price less than 150.
+
+		db.products.find({price: {$lt: 150}});
+
+b) Delete the records having price greater than 60,000.
+
+		db.products.deleteMany({price: {$gt: 60000}});
+
+
+Q3) Create a collection named products.
+
+a) Find all products in the “Electronics” category.
+
+		db.product.find({category: "Electronics"});
+
+
+b) Show only name and price of products where price is greater than 5000.
+
+		db.product.find(
+		{ price: { $gt: 5000 } },
+		{ name: 1, price: 1 }
+		);
+
+
+c) Count how many products are in the “Furniture” category.
+
+		db.product.countDocuments({ category: "Furniture" })
+
+
+Q4) Create a collection named employees.
+
+a) Find all books with price less than 700.
+
+		db.books.find({price: {$lt: 700}});
+
+
+b) Show only title and author of books where stock is less than 10.
+
+		db.books.find(
+		{ stock: { $lt: 10 } },
+		{ title: 1, author: 1 }
+		);
+
+
+c) Count how many books cost more than 500.
+
+		db.books.countDocuments({price: {$gt: 500}});
+
+
+Q5) Create a collection named employees.
+
+a) Find all employees working in the “IT” department.
+
+	db.employees.find({department: "IT"});
+
+
+b) Show name and salary of employees whose salary is greater than 60000.
+
+		db.employees.find(
+		{salary: {$gt: 60000}},
+		{name:1, salary:1}
+		);
+
+
+c) Count how many employees are from “Mumbai”.
+
+		db.employees.countDocuments({city: "Mumbai"});
+
+
+Q6) Create a collection named payments.
+
+a) Find all payments made using “UPI”.
+
+		db.payments.find({method: "UPI"});
+
+
+b) Show paymentId and amount where amount is greater than 3000.
+
+		db.payments.find(
+		{amount: {$gt:3000}},
+		{paymentId: 1, amount: 1}
+		);
+
+
+c) Count how many payments were made by “Aarav Sharma”.
+
+		db.payments.countDocuments({customer: "Aarav Sharma"});
+
+
+Q7) Create a collection named courses.
+
+a) Find all courses conducted in “Online” mode.
+
+		db.courses.find({mode: "Online"});
+
+
+b) Show courseName and fee where fee is greater than 12000.
+
+		 db.courses.find(
+		 {fee: {$gt:12000}},
+		{courseName: 1, fee: 1}
+		);
+
+
+c) Count how many courses have duration greater than 25 days.
+
+		db.courses.countDocuments({duration: {$gt: 25}});
+
+
+Q8) Create a DB with name application_db with collection name as app Details in
+mongodb and insert the following records.
+
+a) Display total of cost per month as per each application type.
+
+		db.appDetails.aggregate([
+		  {
+			$group: {
+			  _id: "$type", 
+			  totalCost: { $sum: "$costPerMonth" }
+			}
+		  }
+		]);
+
+
+
+b) Display count of documents as per each application type.
+
+		db.appDetails.aggregate([
+		  {
+			$group: {
+			  _id: "$type", 
+			  count: { $sum: 1 }
+			}
+		  }
+		]);
+
+
+

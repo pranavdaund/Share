@@ -1,0 +1,272 @@
+1 Provide a master list of all customers, including their full names and account balances for all active accounts?
+-> select c.customerid, concat(c.firstname,' ',c.lastname) as fullname, a.balance
+from customers c
+join accounts a on c.customerid = a.customerid
+where a.status = 'active';
+
+2 The Marketing team needs to identify "High-Value Borrowers." List customers with loan amounts exceeding $50,000?
+-> select distinct c.customerid, concat(c.firstname,' ',c.lastname) as fullname, l.loanamount
+from customers c
+join loans l on c.customerid = l.customerid
+where l.loanamount > 50000;
+
+3 For a regional audit, show all transactions alongside the customer names?
+-> select t.transactionid, concat(c.firstname,' ',c.lastname) as fullname, t.amount, t.transactiontype
+from transactions t
+join accounts a on t.accountid = a.accountid
+join customers c on a.customerid = c.customerid;
+
+4 Track growth: Which customers joined the bank/opened accounts after 2020?
+-> select * from customers where customersince > '2020-01-01';
+
+5 Who is our most loyal customer? Display the full name of the customer who joined the bank first?
+-> select concat(firstname,' ',lastname) as fullname
+from customers
+where customersince = (select min(customersince) from customers);
+
+6 Focus on the West Coast: Show all transactions made specifically by customers in California?
+-> select t.*
+from transactions t
+join accounts a on t.accountid = a.accountid
+join customers c on a.customerid = c.customerid
+where c.state = 'california';
+
+7 Identify "Multi-Product" users: List customers who hold more than one account?
+-> select customerid, count(accountid) as total_accounts
+from accounts
+group by customerid
+having count(accountid) > 1;
+
+8 Market Research (Texas): Display all loans taken by customers residing in Texas?
+-> select l.*
+from loans l
+join customers c on l.customerid = c.customerid
+where c.state = 'texas';
+
+10 Risk vs. Reward: Show account balances alongside the customer’s credit score?
+-> select a.accountid, a.balance, c.creditscore
+from accounts a
+join customers c on a.customerid = c.customerid;
+
+11 Product Performance: List all transactions specifically performed against Savings accounts?
+-> select t.*
+from transactions t
+join accounts a on t.accountid = a.accountid
+where a.accounttype = 'savings';
+
+12 What is our total liquidity per account type?
+-> select accounttype, sum(balance) as total_balance
+from accounts
+group by accounttype;
+
+13 Provide a breakdown of our customer footprint by State?
+-> select state, count(*) as total_customers
+from customers
+group by state;
+
+14 What is the average loan size we provide for each loan category?
+-> select loantype, avg(loanamount) as avg_loan
+from loans
+group by loantype;
+
+15 Identify the "stress test" limit: What is the maximum transaction amount recorded per channel?
+-> select channel, max(amount) as max_amount
+from transactions
+group by channel;
+
+16 Which cities are our most active transaction hubs? (Total amount per city)?
+-> select city, sum(amount) as total_amount
+from transactions
+group by city;
+
+17 Identify popular products: Show account types that have at least 5 active accounts?
+-> select accounttype, count()
+from accounts
+where status = 'active'
+group by accounttype
+having count() >= 5;
+
+18 Credit Quality: Find states where the average credit score of residents is above 700?
+-> select state, avg(creditscore)
+from customers
+group by state
+having avg(creditscore) > 700;
+
+19 Portfolio Concentration: What is the total loan amount issued per state?
+-> select c.state, sum(l.loanamount)
+from loans l
+join customers c on l.customerid = c.customerid
+group by c.state;
+
+20 Channel Usage: Find the number of transactions occurring per channel?
+-> select channel, count(*)
+from transactions
+group by channel;
+
+21 Regional Wealth: Find the highest single account balance recorded in each state?
+-> select c.state, max(a.balance)
+from accounts a
+join customers c on a.customerid = c.customerid
+group by c.state;
+
+22 For a masked report, show only the first 3 characters of customer last names?
+-> select substring(lastname,1,3) as masked_lastname from customers;
+
+23 Round all loan interest rates to one decimal place for the annual report?
+-> select loanid, round(interestrate,1) from loans;
+
+24 Generate a "Customer ID Badge" using initials derived from their names?
+-> select customerid, concat(left(firstname,1),left(lastname,1)) as badge
+from customers;
+
+25 Segmentation: Categorize customers into Credit Tiers based on their scores?
+-> select customerid,
+case
+when creditscore >= 750 then 'high'
+when creditscore >= 700 then 'medium'
+else 'low' end as tier
+from customers;
+
+26 Ticket Sizing: Create a transaction size category?
+-> select transactionid,
+case
+when amount < 1000 then 'small'
+when amount between 1000 and 3000 then 'medium'
+else 'large' end as category
+from transactions;
+
+27 Risk Profiling: Create a "Loan Risk Level" column?
+-> select loanid,
+case
+when loanamount > 200000 then 'high risk'
+when loanamount > 50000 then 'medium risk'
+else 'low risk' end as risk
+from loans;
+
+28 Identify "Elite" customers whose credit score is above the overall bank average?
+-> select * from customers
+where creditscore > (select avg(creditscore) from customers);
+
+29 Which accounts are "Over-Funded"?
+-> select * from accounts
+where balance > (select avg(balance) from accounts);
+
+30 Find the specific customers who hold the highest single loan amount in the bank?
+-> select c.*
+from customers c
+join loans l on c.customerid = l.customerid
+where l.loanamount = (select max(loanamount) from loans);
+
+31 Identify "Abnormal Activity"?
+-> select * from transactions
+where amount > (select avg(amount) from transactions);
+
+32 Which customers are borrowing more than the average borrower?
+-> select * from loans
+where loanamount > (select avg(loanamount) from loans);
+
+33 Regional Outliers?
+-> select l.*
+from loans l
+join customers c on l.customerid = c.customerid
+where l.loanamount > (select avg(l2.loanamount)
+from loans l2
+join customers c2 on l2.customerid = c2.customerid
+where c2.state = c.state);
+
+34 Product Outliers?
+-> select * from accounts a
+where balance > (select avg(balance) from accounts where accounttype = a.accounttype);
+
+35 Identify "High-Volume" transactors?
+-> select a.customerid, sum(t.amount) total
+from transactions t
+join accounts a on t.accountid = a.accountid
+group by a.customerid
+having sum(t.amount) > (select avg(amount) from transactions);
+
+36 Find "Heavy-User" accounts?
+-> select accountid, count()
+from transactions
+group by accountid
+having count() > (select avg(cnt) from (select count(*) cnt from transactions group by accountid) x);
+
+37 State Champions?
+-> select * from customers c
+where creditscore = (select max(creditscore) from customers where state = c.state);
+
+38 Show total transaction amount per account?
+-> select accountid, sum(amount)
+from transactions
+group by accountid;
+
+39 Display the Top 5 customers by total transaction value?
+-> select a.customerid, sum(t.amount) total
+from transactions t
+join accounts a on t.accountid = a.accountid
+group by a.customerid
+order by total desc
+limit 5;
+
+40 Report the average loan amount per state using a nested summary?
+-> select state, avg(total_loan)
+from (select c.state, sum(l.loanamount) total_loan
+from loans l join customers c on l.customerid = c.customerid
+group by c.customerid) x
+group by state;
+
+41 Filter for account balances that are greater than the average balance?
+-> select * from accounts
+where balance > (select avg(balance) from accounts);
+
+42 Identify "High-Value Cities"?
+-> select city, sum(amount)
+from transactions
+group by city
+having sum(amount) > 5000;
+
+43 Unified Customer View?
+-> select customerid from accounts
+union
+select customerid from loans;
+
+44 Intersection Report?
+-> select customerid from accounts
+intersect
+select customerid from loans;
+
+45 Cross-Sell Opportunity?
+-> select distinct customerid from accounts
+where customerid not in (select customerid from loans);
+
+46 Product Gap?
+-> select distinct l.customerid
+from loans l
+where l.customerid not in (select customerid from accounts where accounttype='checking');
+
+47 List the top 10 highest account balances?
+-> select * from accounts
+order by balance desc
+limit 10;
+
+48 Identify the 5 customers with the lowest credit scores?
+-> select * from customers
+order by creditscore asc
+limit 5;
+
+49 Provide a log of the 10 most recent transactions?
+-> select * from transactions
+order by transactiondate desc
+limit 10;
+
+50 Show the Top 7 largest loan amounts?
+-> select * from loans
+order by loanamount desc
+limit 7;
+
+Rank the top customers based on their transaction totals?
+-> select a.customerid, sum(t.amount) total,
+rank() over(order by sum(t.amount) desc) as rnk
+from transactions t
+join accounts a on t.accountid = a.accountid
+group by a.customerid;

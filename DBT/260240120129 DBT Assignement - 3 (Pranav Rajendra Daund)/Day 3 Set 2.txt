@@ -1,0 +1,94 @@
+1) Display the employee names and department names of all the employees working
+   in the job type Salesman as well as Analyst
+
+   select ename, dname
+   from emp inner join dept
+   on emp.deptno = dept.deptno
+   where job = 'salesman' or job = 'analyst';
+   
+2) Display the following report.
+
+   select ename, concat(ename,' wroks in ', dname) as "Department Name"
+   from emp inner join dept
+   on emp.deptno = dept.deptno;
+   
+3. Display the highest salary for each job within each department as per the
+   following report –
+   
+    select d.dname, e.job, max(sal)
+    from emp e join dept d
+    on e.deptno = d.deptno
+	group by d.dname, e.job;
+	
+4. Display employee name, department name, location and job for all employees of
+   MANAGER job having salary above 2900.
+   
+   SELECT d.dname, e.ename, d.loc, e.job 
+   from emp e join dept d
+   on e.deptno = d.deptno Where job = 'MANAGER' AND sal > 2900;
+   
+   
+5. Display the names of the customers who are going to depart on time.
+
+	select p.CustName from customers p join flights f 
+	on p.flightno = f.flightno
+	where status = 'Departure On Time';
+
+6. Display the names of those customers who are not flying from Pune to Bangalore
+
+	select p.CustName from customers p join flights f 
+	on p.flightno = f.flightno
+	where route not in ('Pune-Bangalore');
+	
+7. Display the names of those customers who all are going from Gate number 1.
+	
+	select p.CustName from customers p join flights f 
+	on p.flightno = f.flightno
+	where gateno = 'G1'; 
+	
+8. Display the names of those customers who are going to Chandigad through King
+   Fisher airlines only.
+
+	select p.CustName from customers p join flights f 
+	on p.flightno = f.flightno
+	where FLIGHTNAME = 'King Fisher'; 
+	
+	
+9. Generate the following report –
+
+	select c.custid, c.cname, p.amount, case
+	                                   when amount is null then 'Customer absent in payment_details'
+									   else
+											'customer present in payment_details'
+										end as "Remark"
+	from customer_details c left join payment_details p 
+	on c.custid = p.custid;
+	
+10. Display the customer id customer name, status and amount of the customers who
+    have paid as well as those who have not paid.	
+	
+	select c.custid, c.cname, p.status, count(cname)
+	from customer_details c left join payment_details p 
+	on c.custid = p.custid
+	group by c.custid, c.cname, p.status;
+	
+	
+14)Display transaction id, continent name, country name, city name, amount allocated and amount spent.
+
+	select t.trid, p.name_of_continent, q.name_of_country, t.name_of_city,
+	p.continent_amount_allocated, q.country_amount_allocated
+	from transactions t join country_master q
+	on t.countryid = q.countryid
+	join continent_master p on p.continentid = q.continentid;
+	
+
+15)Display the total amount spent for each city, within each country from each continent.
+
+	select t.name_of_city, c.name_of_country, d.name_of_continent, sum(amount_spent) "City Amount Allocated",
+	sum(Country_Amount_Allocated) as "Country Amount Allocated", 
+	sum( Continent_Amount_Allocated) as "Continent Amount Allocated"
+	from transactions t join country_master c
+	on t.countryid = c.countryid
+	join continent_master d
+	on d.continentid = c.continentid
+	group by t.name_of_city, c.name_of_country, d.name_of_continent;

@@ -1,0 +1,100 @@
+1) Create the table student_master with the following specifications
+
+create table student_master(
+	Rollno Integer Primary key,
+	Name varchar(40) NOT NULL,
+	City varchar(40) DEFAULT 'Mumbai',
+	Marks Integer check (Marks>=0 and Marks<=100),
+	InvoiceNo varchar(40) UNIQUE KEY
+	);
+	
+insert into student_master values(1,'Shivraj','mumbai',99,'GSTN007GT');
+insert into student_master values(2,'Shivam','pune',90,'GSTN009GT');
+insert into student_master values(3,'Gaurav','mumbai',100,'GSTN008GT');
+insert into student_master values(4,'Kartik','shirdi',96,'GSTN010GT');
+insert into student_master values(5,'Yashan','kankavli',96,'GSTN011GT');
+
+2) Create the table certificate_details with the following specifications
+
+create table certificate_details(
+	Rollno Integer ,
+	Date_Of_Certificate Date,
+	Course varchar(100) check (Course ='Oracle' or Course = 'Power BI' or Course = 'Azure Data Factory'),
+	Constraint FK Foreign Key(Rollno) References student_master(Rollno)
+	);
+insert into certificate_details values(1, '2017-03-17','Oracle');
+insert into certificate_details values(2, '2017-03-18','Power BI');
+insert into certificate_details values(3, '2017-03-19','Azure Data Factory');
+
+3) Create the table First_Attempt_Marks with the following specifications
+create table First_Attempt_Marks(
+ 	Rollno integer,
+	Subject varchar(50),
+	Marks integer not null,
+	primary key(Rollno,Subject)
+);
+
+insert into First_Attempt_Marks values(1,"java",70);
+insert into First_Attempt_Marks values(2,"sql",90);
+insert into First_Attempt_Marks values(3,"cpp",80);
+insert into First_Attempt_Marks values(4,"dsa",97);
+insert into First_Attempt_Marks values(5,"c#",90);
+
+
+4) Create the table First_Attempt_Grades with the following specifications.
+
+mysql> CREATE TABLE First_Attempt_Grades (
+    ->     Rollno integer,
+    ->     Subject varchar(50),
+    ->     Grade varchar(10) CHECK (Grade IN ('A', 'B')),
+    ->      CONSTRAINT FK_marks
+    ->     FOREIGN KEY (Rollno, Subject) REFERENCES first_attempt_marks(Rollno, Subject)
+    -> );
+
+	insert into first_attempt_grades values(1,'java','A');
+	insert into first_attempt_grades values(2,'sql','B');
+	insert into first_attempt_grades values(3,'cpp','A');
+	insert into first_attempt_grades values(4,'dsa','A');
+
+5) Create the table cost_analysis with the following specifications
+
+create table cost_analysis(
+ 	Company_ID integer Primary Key ,
+	Company_Name varchar(50) not null,
+	Export_Cost integer,
+	Import_Cost integer,
+        check(Import_Cost >= Export_Cost * 0.4)
+);
+
+
+insert into cost_analysis values(1,'Puma',80,160);
+insert into cost_analysis valsues(2,'Nike',60,150);
+insert into cost_analysis values(3,'Reebek',50,130);
+insert into cost_analysis values(4,'Spark',90,190);
+
+6) Create the table Salesman_Data with the following specifications
+
+create table Salesman_Data(
+	Salesman_ID integer primary key,
+	Salesman_Name varchar(20) not null,
+	Area_Code  integer unique key,
+	Sales_Amt  integer,
+	Profit_Amt integer,	
+	check(Sales_Amt>5000 or Profit_Amt>700)
+
+);
+
+insert into Salesman_Data value(1,'shreeyash',27,10000,2000);
+insert into Salesman_Data value(2,'dhiraj',39,9000,1000);
+insert into Salesman_Data value(3,'harshal',69,50000,1000);
+insert into Salesman_Data value(4,'sairaj',34,10000,3000);
+insert into Salesman_Data value(5,'kartik',27,90000,1000);
+
+
+
+
+
+
+
+
+

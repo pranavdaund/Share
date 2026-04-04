@@ -1,0 +1,70 @@
+Q1. Update GPA to 3.00 for all students whose GPA is below 2.00.
+
+mysql> update students
+    -> set GPA=3.0
+    -> where GPA<2.0;
+
+Q2 Increase salary by 8% for instructors in the Mathematics department.
+
+mysql>  update instructors
+	set salary=(salary*1.08),
+	where department='Mathematics';
+
+Q3 Set student status to &#39;INACTIVE&#39; for students registered before 2021.
+
+mysql> 	update students
+	set status='INACTIVE'
+	where registration_date < '2021-01-01';
+
+Q4 Reduce course fee by 10% for courses having credits = 3.
+
+mysql> update courses
+    -> set fee=fee*0.9
+    -> where credits=3;
+
+Q5 Update payment_status to 'PAID' where grade is not blank.
+
+mysql> update enrollments
+    -> set payment_status='PAID'
+    -> where grade is null;
+
+Q6 Increase GPA by 0.10 for students from Texas.
+
+mysql> update students
+    -> set gpa = gpa * 1.10
+    -> where state = 'Texas';
+
+Q7 Update fee to 1000 for 'Web Development' course.
+
+mysql> update courses
+    -> set fee=1000
+    -> where course_name = 'Web Development';
+
+Q8 Delete enrolments which have grade as 'F';.
+
+mysql> DELETE FROM enrollments WHERE grade='F';
+
+Q9 Increase salary by 5% for instructors whose salary is below 70000.
+
+mysql> update instructors
+    -> set salary = salary * 1.05
+    -> where  salary < 70000;
+
+Q10 Delete records from enrolments table of students who have not paid.
+
+mysql> DELETE FROM enrollments WHERE payment_status = 'Unpaid';
+
+Q11 Delete those courses who have their fees less than 1000.
+
+mysql> DELETE FROM courses WHERE fee < 1000; (Error)
+
+Q12 Delete records of students from students table who have their gpa above 4.00.
+
+mysql> DELETE FROM students WHERE gpa > 4.0; (Error)
+		
+Q13 Change the instructor Mathhew’s department from Chemistry to Physics
+
+mysql> update instructors
+    -> set department='Physics'
+    -> where first_name='Matthew';
+
