@@ -1,5 +1,6 @@
 
 
+
 <hibernate-configuration>
 
 	<session-factory>
@@ -18,6 +19,7 @@
 		
 		<mapping class="pojos.Course"/>
 		<mapping class="pojos.Student"/>
+		<mapping class="pojos.Address"/>
 		
 		
 		

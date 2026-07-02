@@ -17,9 +17,8 @@
 		<property name="hibernate.hbm2ddl.auto">update</property>
 		<!-- add mapping entry HBM -->
 		
-		<mapping class="pojos.Course"/>
-		<mapping class="pojos.Student"/>
-		<mapping class="pojos.Address"/>
+		<!-- <mapping class="pojos.User"/> -->
+		
 		
 		
 		
